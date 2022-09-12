@@ -4,7 +4,7 @@ import os
 from random import choice
 
 import redis
-import vk_api as vk 
+import vk_api as vk
 from dotenv import load_dotenv
 from vk_api.longpoll import VkLongPoll, VkEventType, Event
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
@@ -125,7 +125,7 @@ def main() -> None:
         password=db_password,
         decode_responses=True
     )
-    
+
     longpoll = VkLongPoll(vk_session)
     vk_api = vk_session.get_api()
     keyboard = VkKeyboard(one_time=True)

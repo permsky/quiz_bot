@@ -35,8 +35,8 @@ def start(bot: telegram.bot.Bot, update: telegram.update.Update) -> State:
     custom_keyboard = [['Новый вопрос', 'Сдаться'], ['Мой счет']]
     reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
     bot.send_message(
-        chat_id=update.message.chat_id, 
-        text='Привет! Я бот для викторин!', 
+        chat_id=update.message.chat_id,
+        text='Привет! Я бот для викторин!',
         reply_markup=reply_markup
     )
     return State.QUESTION
@@ -77,18 +77,18 @@ def handle_solution_attempt(
         custom_keyboard = [['Новый вопрос'], ['Мой счет']]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
         bot.send_message(
-            chat_id=chat_id, 
-            text=reply_text, 
+            chat_id=chat_id,
+            text=reply_text,
             reply_markup=reply_markup
         )
-        return State.QUESTION 
+        return State.QUESTION
     else:
         reply_text = 'Неправильно… Попробуешь ещё раз?'
         custom_keyboard = [['Сдаться'], ['Мой счет']]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
         bot.send_message(
-            chat_id=chat_id, 
-            text=reply_text, 
+            chat_id=chat_id,
+            text=reply_text,
             reply_markup=reply_markup
         )
         return State.ANSWER
