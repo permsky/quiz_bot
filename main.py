@@ -2,7 +2,8 @@ import json
 import os
 
 
-def main():
+def main() -> None:
+    '''Create json-file with quiz.'''
     files_dir = 'quiz-questions'
     questions_and_answers = dict()
     for dirpath, dirnames, filenames in os.walk(files_dir):

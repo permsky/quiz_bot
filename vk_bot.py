@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def start(event: Event, vk_api: VkApiMethod, keyboard: VkKeyboard) -> None:
+    '''Send a message when the command /start is issued.'''
     vk_api.messages.send(
         user_id=event.user_id,
         message='Привет! Я бот для викторин!',
@@ -36,7 +37,7 @@ def handle_new_question_request(
     db: redis.Redis,
     keyboard: VkKeyboard
 ) -> None:
-    """Send random question to user."""
+    '''Send random question to user.'''
     user_id = event.user_id
     question, answer = choice(list(questions.items()))
     question = fill(question, width=55)
@@ -57,7 +58,7 @@ def handle_solution_attempt(
     db: redis.Redis,
     keyboard: VkKeyboard
 ) -> None:
-    """Check user's answer."""
+    '''Check user's answer.'''
     user_id = event.user_id
     answer_from_db = db.get(f'vk-{user_id}-answer')
     answer_from_db_chunk = answer_from_db.split('.')[0]
@@ -90,7 +91,7 @@ def handle_give_up(
     db: redis.Redis,
     keyboard: VkKeyboard
 ) -> None:
-    """Process 'Сдаться' button click."""
+    '''Process 'Сдаться' button click.'''
     user_id = event.user_id
     reply_text = db.get(f'vk-{user_id}-answer')
     vk_api.messages.send(
@@ -112,9 +113,9 @@ def main() -> None:
     '''Start VK-bot.'''
     load_dotenv()
     vk_session = vk.VkApi(token=os.getenv('VK_GROUP_TOKEN'))
-    db_host = os.getenv("DB_HOST", default='localhost')
-    db_port = os.getenv("DB_PORT", default=6379)
-    db_password = os.getenv("DB_PASSWORD", default=None)
+    db_host = os.getenv('DB_HOST', default='localhost')
+    db_port = os.getenv('DB_PORT', default=6379)
+    db_password = os.getenv('DB_PASSWORD', default=None)
 
     with open('question-answer.json', 'r', encoding='utf-8') as json_file:
         questions = json.load(json_file)

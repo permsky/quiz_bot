@@ -32,7 +32,7 @@ class State(Enum):
 
 
 def start(bot: telegram.bot.Bot, update: telegram.update.Update) -> State:
-    """Send a message when the command /start is issued."""
+    '''Send a message when the command /start is issued.'''
     custom_keyboard = [['Новый вопрос', 'Сдаться'], ['Мой счет']]
     reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
     bot.send_message(
@@ -44,7 +44,7 @@ def start(bot: telegram.bot.Bot, update: telegram.update.Update) -> State:
 
 
 def help(bot: telegram.bot.Bot, update: telegram.update.Update) -> None:
-    """Send a message when the command /help is issued."""
+    '''Send a message when the command /help is issued.'''
     update.message.reply_text('Введите команду /start для начала викторины.')
 
 
@@ -54,7 +54,7 @@ def handle_new_question_request(
     questions: dict,
     db: redis.Redis
 ) -> State:
-    """Send random question to user."""
+    '''Send random question to user.'''
     question, answer = choice(list(questions.items()))
     question = fill(question, width=55)
     answer = fill(answer, width=55)
@@ -69,7 +69,7 @@ def handle_solution_attempt(
     update: telegram.update.Update,
     db: redis.Redis
 ) -> State:
-    """Check user's answer."""
+    '''Check user's answer.'''
     chat_id = update.message.chat_id
     answer_from_db = db.get(f'{chat_id}-answer')
     answer_from_db_chunk = answer_from_db.split('.')[0]
@@ -105,7 +105,7 @@ def handle_give_up(
     questions: dict,
     db: redis.Redis
 ) -> State:
-    """Process 'Сдаться' button click."""
+    '''Process 'Сдаться' button click.'''
     chat_id = update.message.chat_id
     reply_text = db.get(f'{chat_id}-answer')
     update.message.reply_text(f'Правильный ответ:\n{reply_text}')
@@ -118,12 +118,12 @@ def handle_give_up(
 
 
 def main() -> None:
-    """Start the Telegram-bot."""
+    '''Start the Telegram-bot.'''
     load_dotenv()
-    tg_token = os.getenv("TG_BOT_TOKEN")
-    db_host = os.getenv("DB_HOST", default='localhost')
-    db_port = os.getenv("DB_PORT", default=6379)
-    db_password = os.getenv("DB_PASSWORD", default=None)
+    tg_token = os.getenv('TG_BOT_TOKEN')
+    db_host = os.getenv('DB_HOST', default='localhost')
+    db_port = os.getenv('DB_PORT', default=6379)
+    db_password = os.getenv('DB_PASSWORD', default=None)
 
     with open('question-answer.json', 'r', encoding='utf-8') as json_file:
         questions = json.load(json_file)
@@ -140,8 +140,8 @@ def main() -> None:
 
     conv_handler = ConversationHandler(
         entry_points=[
-            CommandHandler("start", start),
-            CommandHandler("help", help)
+            CommandHandler('start', start),
+            CommandHandler('help', help)
         ],
         states={
             State.QUESTION: [
@@ -168,8 +168,8 @@ def main() -> None:
             ],
         },
         fallbacks=[
-            CommandHandler("start", start),
-            CommandHandler("help", help)
+            CommandHandler('start', start),
+            CommandHandler('help', help)
         ]
     )
 
