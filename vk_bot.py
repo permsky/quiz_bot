@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from random import choice
+from textwrap import dedent, fill
 
 import redis
 import vk_api as vk
@@ -38,17 +39,13 @@ def handle_new_question_request(
     """Send random question to user."""
     user_id = event.user_id
     question, answer = choice(list(questions.items()))
+    question = fill(question, width=55)
+    answer = fill(answer, width=55)
     db.set(f'vk-{user_id}-question', question)
     db.set(f'vk-{user_id}-answer', answer)
     vk_api.messages.send(
         user_id=user_id,
         message=question,
-        random_id=get_random_id(),
-        keyboard=keyboard.get_keyboard()
-    )
-    vk_api.messages.send(
-        user_id=user_id,
-        message=answer,
         random_id=get_random_id(),
         keyboard=keyboard.get_keyboard()
     )
@@ -66,10 +63,13 @@ def handle_solution_attempt(
     answer_from_db_chunk = answer_from_db.split('.')[0]
     answer = answer_from_db_chunk.split('(')[0].strip().lower()
     if event.text.strip().lower() == answer:
-        reply_text = 'Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»'
+        reply_text = '''\
+        Правильно! Поздравляю! Для следующего вопроса нажми
+        «Новый вопрос»
+        '''
         vk_api.messages.send(
             user_id=user_id,
-            message=reply_text,
+            message=dedent(reply_text),
             random_id=get_random_id(),
             keyboard=keyboard.get_keyboard()
         )
@@ -95,7 +95,7 @@ def handle_give_up(
     reply_text = db.get(f'vk-{user_id}-answer')
     vk_api.messages.send(
             user_id=user_id,
-            message=reply_text,
+            message=f'Правильный ответ:\n{reply_text}',
             random_id=get_random_id(),
             keyboard=keyboard.get_keyboard()
         )

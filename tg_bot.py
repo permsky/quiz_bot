@@ -4,6 +4,7 @@ import os
 from enum import Enum
 from functools import partial
 from random import choice
+from textwrap import dedent, fill
 
 import redis
 import telegram
@@ -44,7 +45,7 @@ def start(bot: telegram.bot.Bot, update: telegram.update.Update) -> State:
 
 def help(bot: telegram.bot.Bot, update: telegram.update.Update) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
+    update.message.reply_text('Введите команду /start для начала викторины.')
 
 
 def handle_new_question_request(
@@ -55,10 +56,11 @@ def handle_new_question_request(
 ) -> State:
     """Send random question to user."""
     question, answer = choice(list(questions.items()))
+    question = fill(question, width=55)
+    answer = fill(answer, width=55)
     db.set(f'{update.message.chat_id}-question', question)
     db.set(f'{update.message.chat_id}-answer', answer)
     update.message.reply_text(question)
-    update.message.reply_text(answer)
     return State.ANSWER
 
 
@@ -73,12 +75,15 @@ def handle_solution_attempt(
     answer_from_db_chunk = answer_from_db.split('.')[0]
     answer = answer_from_db_chunk.split('(')[0].strip().lower()
     if update.message.text.strip().lower() == answer:
-        reply_text = 'Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»'
+        reply_text = '''\
+        Правильно! Поздравляю! Для следующего вопроса нажми
+        «Новый вопрос»
+        '''
         custom_keyboard = [['Новый вопрос'], ['Мой счет']]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
         bot.send_message(
             chat_id=chat_id,
-            text=reply_text,
+            text=dedent(reply_text),
             reply_markup=reply_markup
         )
         return State.QUESTION
@@ -102,7 +107,8 @@ def handle_give_up(
 ) -> State:
     """Process 'Сдаться' button click."""
     chat_id = update.message.chat_id
-    update.message.reply_text(db.get(f'{chat_id}-answer'))
+    reply_text = db.get(f'{chat_id}-answer')
+    update.message.reply_text(f'Правильный ответ:\n{reply_text}')
     return handle_new_question_request(
         bot=bot,
         update=update,
