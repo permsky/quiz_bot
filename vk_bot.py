@@ -45,7 +45,7 @@ def handle_new_question_request(
     db.set(f'vk-{user_id}-answer', answer)
     vk_api.messages.send(
         user_id=user_id,
-        message=question,
+        message=f'Вопрос:\n{question}',
         random_id=get_random_id(),
         keyboard=keyboard.get_keyboard()
     )

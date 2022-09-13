@@ -14,7 +14,7 @@ def main():
                     points = quiz_block.split('\n\n')
                     for point in points:
                         if point.startswith('Вопрос '):
-                            question = point
+                            question = point.split(':')[1]
                         if point.startswith('Ответ:'):
                             answer = point[7:]
                             questions_and_answers[question] = answer

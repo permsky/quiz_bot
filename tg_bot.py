@@ -60,7 +60,7 @@ def handle_new_question_request(
     answer = fill(answer, width=55)
     db.set(f'{update.message.chat_id}-question', question)
     db.set(f'{update.message.chat_id}-answer', answer)
-    update.message.reply_text(question)
+    update.message.reply_text(f'Вопрос:\n{question}')
     return State.ANSWER
 
 
