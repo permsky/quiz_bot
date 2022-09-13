@@ -45,7 +45,7 @@
     ```
 - Скрипт `main.py` предназначен для формирования json-файла с вопросами и ответами из исходных данных, находящихся в    текстовых файлах в директории `quiz-questions`:
     ```
-    python main.py
+    python create_quiz.py
     ```
 
 ## Деплой ботов на [Heroku](https://id.heroku.com/login)
