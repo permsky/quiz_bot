@@ -38,7 +38,6 @@ def handle_new_question_request(
     question, answer = choice(list(questions.items()))
     question = fill(question, width=55)
     answer = fill(answer, width=55)
-    db.set(f'vk-{user_id}-question', question)
     db.set(f'vk-{user_id}-answer', answer)
     vk_api.messages.send(
         user_id=user_id,

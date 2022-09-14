@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 class State(Enum):
     QUESTION = 1
     ANSWER = 2
-    GIVE_UP = 3
 
 
 def start(bot: telegram.bot.Bot, update: telegram.update.Update) -> State:
@@ -54,7 +53,6 @@ def handle_new_question_request(
     question, answer = choice(list(questions.items()))
     question = fill(question, width=55)
     answer = fill(answer, width=55)
-    db.set(f'{update.message.chat_id}-question', question)
     db.set(f'{update.message.chat_id}-answer', answer)
     update.message.reply_text(f'Вопрос:\n{question}')
     return State.ANSWER
