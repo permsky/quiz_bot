@@ -1,10 +1,16 @@
 import json
 import os
 
+from dotenv import load_dotenv
+
 
 def main() -> None:
     '''Create json-file with quiz.'''
-    files_dir = 'quiz-questions'
+    load_dotenv()
+    files_dir = os.getenv(
+        'QUIZ_QUESTIONS_DIRECTORY',
+        default='quiz-questions'
+    )
     questions_and_answers = dict()
     for dirpath, dirnames, filenames in os.walk(files_dir):
         for filename in filenames:
